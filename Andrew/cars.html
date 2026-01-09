@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Andrew's Car Collection - Luxury and Classic Automobiles">
+    <title>Andrew's Car Collection</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cars-hero {
+            min-height: 60vh;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e8ba3 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+        }
+
+        .cars-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .cars-hero p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: white;
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cars-section {
+            padding: 80px 20px;
+            background: var(--bg-light);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            border: 2px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .cars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .car-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .car-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .car-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .car-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .car-info {
+            padding: 1.5rem;
+        }
+
+        .car-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .car-year {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .car-specs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .spec-item i {
+            color: var(--primary-color);
+        }
+
+        .car-description {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .car-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .car-tag {
+            background: var(--bg-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 5% auto;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            animation: slideInDown 0.4s ease;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .modal-info {
+            padding: 2rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            transform: scale(1.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cars-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .cars-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-link {
+                top: 70px;
+                left: 10px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                margin: 10% 10px;
+            }
+
+            .modal-image {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Andrew's Portfolio</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="cars.html" class="nav-link">Car Collection</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+
+    <!-- Hero Section -->
+    <section class="cars-hero">
+        <div>
+            <h1><i class="fas fa-car"></i> Andrew's Car Collection</h1>
+            <p>Explore my passion for automotive excellence - from classic beauties to modern marvels</p>
+        </div>
+    </section>
+
+    <!-- Cars Collection Section -->
+    <section class="cars-section">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Cars</button>
+                <button class="filter-btn" data-filter="luxury">Luxury</button>
+                <button class="filter-btn" data-filter="sports">Sports</button>
+                <button class="filter-btn" data-filter="classic">Classic</button>
+                <button class="filter-btn" data-filter="exotic">Exotic</button>
+            </div>
+
+            <div class="cars-grid" id="carsGrid">
+                <!-- Car 1: Porsche 911 -->
+                <div class="car-card" data-category="sports" data-id="1">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&h=600&fit=crop" alt="Porsche 911" class="car-image">
+                        <div class="car-badge">Sports</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Porsche 911 GT3</h3>
+                        <p class="car-year">2023 Model</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>502 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>0-60: 3.2s</span>
+                            </div>
+                        </div>
+                        <p class="car-description">The ultimate driving machine with precision engineering and track-ready performance.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">Manual</span>
+                            <span class="car-tag">RWD</span>
+                            <span class="car-tag">Track Ready</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 2: Mercedes AMG GT -->
+                <div class="car-card" data-category="luxury sports" data-id="2">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&h=600&fit=crop" alt="Mercedes AMG GT" class="car-image">
+                        <div class="car-badge">Luxury</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Mercedes-AMG GT</h3>
+                        <p class="car-year">2024 Model</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>523 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>0-60: 3.5s</span>
+                            </div>
+                        </div>
+                        <p class="car-description">German luxury meets raw performance in this stunning grand tourer.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">Automatic</span>
+                            <span class="car-tag">AWD</span>
+                            <span class="car-tag">Luxury</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 3: Ferrari F8 Tributo -->
+                <div class="car-card" data-category="exotic sports" data-id="3">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1592198084033-aade902d1aae?w=800&h=600&fit=crop" alt="Ferrari" class="car-image">
+                        <div class="car-badge">Exotic</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Ferrari F8 Tributo</h3>
+                        <p class="car-year">2023 Model</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>710 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>0-60: 2.9s</span>
+                            </div>
+                        </div>
+                        <p class="car-description">Italian excellence with a twin-turbo V8 that screams passion and performance.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">DCT</span>
+                            <span class="car-tag">RWD</span>
+                            <span class="car-tag">Limited Edition</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 4: Lamborghini Huracán -->
+                <div class="car-card" data-category="exotic sports" data-id="4">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&h=600&fit=crop" alt="Lamborghini" class="car-image">
+                        <div class="car-badge">Exotic</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Lamborghini Huracán EVO</h3>
+                        <p class="car-year">2024 Model</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>631 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>0-60: 2.9s</span>
+                            </div>
+                        </div>
+                        <p class="car-description">A raging bull with naturally aspirated V10 power and aggressive Italian styling.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">DCT</span>
+                            <span class="car-tag">AWD</span>
+                            <span class="car-tag">V10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 5: Classic Mustang -->
+                <div class="car-card" data-category="classic" data-id="5">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1584345604476-8ec5f5195522?w=800&h=600&fit=crop" alt="Classic Mustang" class="car-image">
+                        <div class="car-badge">Classic</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Ford Mustang Fastback</h3>
+                        <p class="car-year">1967 Restored</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>335 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-cog"></i>
+                                <span>V8 Engine</span>
+                            </div>
+                        </div>
+                        <p class="car-description">An American icon fully restored to its original glory with modern upgrades.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">Manual</span>
+                            <span class="car-tag">RWD</span>
+                            <span class="car-tag">Restored</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 6: BMW M4 -->
+                <div class="car-card" data-category="sports luxury" data-id="6">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=600&fit=crop" alt="BMW M4" class="car-image">
+                        <div class="car-badge">Sports</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>BMW M4 Competition</h3>
+                        <p class="car-year">2024 Model</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>503 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>0-60: 3.8s</span>
+                            </div>
+                        </div>
+                        <p class="car-description">Bavarian precision with twin-turbo power and razor-sharp handling.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">Automatic</span>
+                            <span class="car-tag">RWD</span>
+                            <span class="car-tag">Carbon Fiber</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 7: Aston Martin DB11 -->
+                <div class="car-card" data-category="luxury" data-id="7">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&h=600&fit=crop" alt="Aston Martin" class="car-image">
+                        <div class="car-badge">Luxury</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Aston Martin DB11</h3>
+                        <p class="car-year">2023 Model</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>630 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>0-60: 3.5s</span>
+                            </div>
+                        </div>
+                        <p class="car-description">British elegance meets supercar performance in this grand tourer masterpiece.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">Automatic</span>
+                            <span class="car-tag">RWD</span>
+                            <span class="car-tag">Handcrafted</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 8: McLaren 720S -->
+                <div class="car-card" data-category="exotic sports" data-id="8">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1600705722908-bab1e61c0b4d?w=800&h=600&fit=crop" alt="McLaren" class="car-image">
+                        <div class="car-badge">Exotic</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>McLaren 720S</h3>
+                        <p class="car-year">2023 Model</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>710 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>0-60: 2.8s</span>
+                            </div>
+                        </div>
+                        <p class="car-description">British engineering at its finest with carbon fiber construction and extreme aerodynamics.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">DCT</span>
+                            <span class="car-tag">RWD</span>
+                            <span class="car-tag">Carbon Fiber</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 9: Corvette C8 -->
+                <div class="car-card" data-category="sports" data-id="9">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=800&h=600&fit=crop" alt="Corvette" class="car-image">
+                        <div class="car-badge">Sports</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Chevrolet Corvette C8 Z06</h3>
+                        <p class="car-year">2024 Model</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>670 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>0-60: 2.6s</span>
+                            </div>
+                        </div>
+                        <p class="car-description">America's supercar with mid-engine layout and flat-plane crank V8.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">DCT</span>
+                            <span class="car-tag">RWD</span>
+                            <span class="car-tag">Track Pack</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 10: Classic Porsche -->
+                <div class="car-card" data-category="classic" data-id="10">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1611859266238-4b98091d9d9b?w=800&h=600&fit=crop" alt="Classic Porsche" class="car-image">
+                        <div class="car-badge">Classic</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Porsche 911 Carrera RS</h3>
+                        <p class="car-year">1973 Restored</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>210 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Flat-6</span>
+                            </div>
+                        </div>
+                        <p class="car-description">The legendary ducktail Porsche, a timeless icon of automotive design.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">Manual</span>
+                            <span class="car-tag">RWD</span>
+                            <span class="car-tag">Collector</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 11: Audi R8 -->
+                <div class="car-card" data-category="sports exotic" data-id="11">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1614200187524-dc4b892acf16?w=800&h=600&fit=crop" alt="Audi R8" class="car-image">
+                        <div class="car-badge">Sports</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Audi R8 V10 Performance</h3>
+                        <p class="car-year">2024 Model</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>602 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>0-60: 3.2s</span>
+                            </div>
+                        </div>
+                        <p class="car-description">German engineering with naturally aspirated V10 symphony and quattro grip.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">DCT</span>
+                            <span class="car-tag">AWD</span>
+                            <span class="car-tag">V10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car 12: Tesla Model S Plaid -->
+                <div class="car-card" data-category="luxury sports" data-id="12">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&h=600&fit=crop" alt="Tesla" class="car-image">
+                        <div class="car-badge">Electric</div>
+                    </div>
+                    <div class="car-info">
+                        <h3>Tesla Model S Plaid</h3>
+                        <p class="car-year">2024 Model</p>
+                        <div class="car-specs">
+                            <div class="spec-item">
+                                <i class="fas fa-bolt"></i>
+                                <span>1020 HP</span>
+                            </div>
+                            <div class="spec-item">
+                                <i class="fas fa-gauge-high"></i>
+                                <span>0-60: 1.99s</span>
+                            </div>
+                        </div>
+                        <p class="car-description">The future of performance with tri-motor all-electric powertrain.</p>
+                        <div class="car-tags">
+                            <span class="car-tag">Electric</span>
+                            <span class="car-tag">AWD</span>
+                            <span class="car-tag">Autopilot</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="carModal" class="modal">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <div class="modal-content" id="modalContent">
+            <!-- Modal content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Andrew. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/andy-ng-rfc" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const carCards = document.querySelectorAll('.car-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+
+                carCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const categories = card.dataset.category.split(' ');
+                        if (categories.includes(filter)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('carModal');
+        const closeModal = document.getElementById('closeModal');
+
+        carCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const img = card.querySelector('.car-image').src;
+                const title = card.querySelector('h3').textContent;
+                const year = card.querySelector('.car-year').textContent;
+                const specs = card.querySelector('.car-specs').innerHTML;
+                const description = card.querySelector('.car-description').textContent;
+                const tags = card.querySelector('.car-tags').innerHTML;
+
+                document.getElementById('modalContent').innerHTML = `
+                    <img src="${img}" alt="${title}" class="modal-image">
+                    <div class="modal-info">
+                        <h2>${title}</h2>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">${year}</p>
+                        <div class="car-specs" style="margin-bottom: 1.5rem;">${specs}</div>
+                        <p style="line-height: 1.8; margin-bottom: 1.5rem;">${description}</p>
+                        <div class="car-tags">${tags}</div>
+                    </div>
+                `;
+
+                modal.style.display = 'block';
+            });
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Escape key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

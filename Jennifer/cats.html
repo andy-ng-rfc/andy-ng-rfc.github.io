@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Jennifer's Cat Collection - Beautiful Feline Friends">
+    <title>Jennifer's Cat Collection</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cats-hero {
+            min-height: 60vh;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+        }
+
+        .cats-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        .cats-hero p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: white;
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cats-section {
+            padding: 80px 20px;
+            background: var(--bg-light);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            border: 2px solid #f5576c;
+            background: white;
+            color: #f5576c;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #f5576c;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .cats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .cat-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .cat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .cat-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .cat-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #f5576c;
+        }
+
+        .cat-info {
+            padding: 1.5rem;
+        }
+
+        .cat-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .cat-breed {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .cat-traits {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .trait-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .trait-item i {
+            color: #f5576c;
+        }
+
+        .cat-description {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .cat-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .cat-tag {
+            background: var(--bg-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 5% auto;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            animation: slideInDown 0.4s ease;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .modal-info {
+            padding: 2rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            transform: scale(1.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cats-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .cats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-link {
+                top: 70px;
+                left: 10px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                margin: 10% 10px;
+            }
+
+            .modal-image {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Jennifer's Portfolio</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="cats.html" class="nav-link">Cat Collection</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+
+    <!-- Hero Section -->
+    <section class="cats-hero">
+        <div>
+            <h1><i class="fas fa-cat"></i> Jennifer's Cat Collection</h1>
+            <p>Meet my adorable feline friends - from playful kittens to majestic beauties</p>
+        </div>
+    </section>
+
+    <!-- Cats Collection Section -->
+    <section class="cats-section">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Cats</button>
+                <button class="filter-btn" data-filter="persian">Persian</button>
+                <button class="filter-btn" data-filter="siamese">Siamese</button>
+                <button class="filter-btn" data-filter="bengal">Bengal</button>
+                <button class="filter-btn" data-filter="other">Other Breeds</button>
+            </div>
+
+            <div class="cats-grid" id="catsGrid">
+                <!-- Cat 1: Orange Tabby -->
+                <div class="cat-card" data-category="other" data-id="1">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=800&h=600&fit=crop" alt="Orange Tabby" class="cat-image">
+                        <div class="cat-badge">Tabby</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Milo</h3>
+                        <p class="cat-breed">Orange Tabby • 3 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Affectionate</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-star"></i>
+                                <span>Playful</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">A friendly and energetic tabby who loves to play fetch and chase laser pointers all day long.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Indoor</span>
+                            <span class="cat-tag">Neutered</span>
+                            <span class="cat-tag">Friendly</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 2: Persian Cat -->
+                <div class="cat-card" data-category="persian" data-id="2">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1595433707802-6b2626ef1c91?w=800&h=600&fit=crop" alt="Persian Cat" class="cat-image">
+                        <div class="cat-badge">Persian</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Princess Luna</h3>
+                        <p class="cat-breed">Persian • 5 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-crown"></i>
+                                <span>Elegant</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-bed"></i>
+                                <span>Calm</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">A regal Persian with luxurious fur and a gentle temperament. Loves grooming sessions and peaceful naps.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Purebred</span>
+                            <span class="cat-tag">Indoor</span>
+                            <span class="cat-tag">Show Quality</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 3: Siamese -->
+                <div class="cat-card" data-category="siamese" data-id="3">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=800&h=600&fit=crop" alt="Siamese Cat" class="cat-image">
+                        <div class="cat-badge">Siamese</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Sapphire</h3>
+                        <p class="cat-breed">Siamese • 2 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-volume-up"></i>
+                                <span>Vocal</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-brain"></i>
+                                <span>Intelligent</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">Stunning blue-eyed Siamese with a talkative personality. Loves conversations and interactive play.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Purebred</span>
+                            <span class="cat-tag">Vocal</span>
+                            <span class="cat-tag">Social</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 4: Bengal -->
+                <div class="cat-card" data-category="bengal" data-id="4">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=800&h=600&fit=crop" alt="Bengal Cat" class="cat-image">
+                        <div class="cat-badge">Bengal</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Tiger</h3>
+                        <p class="cat-breed">Bengal • 4 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-bolt"></i>
+                                <span>Energetic</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-paw"></i>
+                                <span>Wild Spirit</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">Athletic Bengal with wild leopard markings. Loves climbing, jumping, and exploring every corner.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Active</span>
+                            <span class="cat-tag">Adventurous</span>
+                            <span class="cat-tag">Athletic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 5: British Shorthair -->
+                <div class="cat-card" data-category="other" data-id="5">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=600&fit=crop" alt="British Shorthair" class="cat-image">
+                        <div class="cat-badge">British</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Winston</h3>
+                        <p class="cat-breed">British Shorthair • 6 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-smile"></i>
+                                <span>Easygoing</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-couch"></i>
+                                <span>Relaxed</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">Round-faced British Shorthair with a teddy bear appearance. Perfect lap cat and gentle companion.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Purebred</span>
+                            <span class="cat-tag">Docile</span>
+                            <span class="cat-tag">Cuddly</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 6: Calico -->
+                <div class="cat-card" data-category="other" data-id="6">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1573865526739-10c1d3a1acc8?w=800&h=600&fit=crop" alt="Calico Cat" class="cat-image">
+                        <div class="cat-badge">Calico</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Patches</h3>
+                        <p class="cat-breed">Calico • 4 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-palette"></i>
+                                <span>Unique</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-fire"></i>
+                                <span>Sassy</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">Beautiful tri-colored calico with a spirited personality. Independent but loving on her own terms.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Female</span>
+                            <span class="cat-tag">Independent</span>
+                            <span class="cat-tag">Rare</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 7: Maine Coon -->
+                <div class="cat-card" data-category="other" data-id="7">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=800&h=600&fit=crop" alt="Maine Coon" class="cat-image">
+                        <div class="cat-badge">Maine Coon</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Maximus</h3>
+                        <p class="cat-breed">Maine Coon • 5 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-mountain"></i>
+                                <span>Giant</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-hands-helping"></i>
+                                <span>Gentle</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">Majestic Maine Coon with a lion-like mane. Gentle giant who loves everyone and everything.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Large</span>
+                            <span class="cat-tag">Friendly</span>
+                            <span class="cat-tag">Dog-like</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 8: Russian Blue -->
+                <div class="cat-card" data-category="other" data-id="8">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1615789591457-74a63395c990?w=800&h=600&fit=crop" alt="Russian Blue" class="cat-image">
+                        <div class="cat-badge">Russian Blue</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Misty</h3>
+                        <p class="cat-breed">Russian Blue • 3 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-eye"></i>
+                                <span>Observant</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-user-secret"></i>
+                                <span>Shy</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">Elegant silver-blue coat with striking green eyes. Reserved but deeply loyal to family.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Purebred</span>
+                            <span class="cat-tag">Quiet</span>
+                            <span class="cat-tag">Loyal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 9: Ragdoll -->
+                <div class="cat-card" data-category="other" data-id="9">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1609691404158-f8d7ad96be6f?w=800&h=600&fit=crop" alt="Ragdoll Cat" class="cat-image">
+                        <div class="cat-badge">Ragdoll</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Bella</h3>
+                        <p class="cat-breed">Ragdoll • 4 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-cloud"></i>
+                                <span>Soft</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Loving</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">Fluffy Ragdoll with blue eyes who goes limp when picked up. Ultimate cuddle companion.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Purebred</span>
+                            <span class="cat-tag">Docile</span>
+                            <span class="cat-tag">Affectionate</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 10: Tuxedo -->
+                <div class="cat-card" data-category="other" data-id="10">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1529778873920-4da4926a72c2?w=800&h=600&fit=crop" alt="Tuxedo Cat" class="cat-image">
+                        <div class="cat-badge">Tuxedo</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Felix</h3>
+                        <p class="cat-breed">Tuxedo • 2 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-user-tie"></i>
+                                <span>Dapper</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-laugh"></i>
+                                <span>Funny</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">Handsome tuxedo cat who looks dressed for a formal occasion. Clown of the family.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Indoor</span>
+                            <span class="cat-tag">Playful</span>
+                            <span class="cat-tag">Entertaining</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 11: Persian White -->
+                <div class="cat-card" data-category="persian" data-id="11">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1548681528-6a5c45b66b42?w=800&h=600&fit=crop" alt="White Persian" class="cat-image">
+                        <div class="cat-badge">Persian</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Snowball</h3>
+                        <p class="cat-breed">Persian • 4 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-snowflake"></i>
+                                <span>Pure White</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-spa"></i>
+                                <span>Pristine</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">Stunning white Persian with copper eyes. Requires daily grooming but worth every moment.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Purebred</span>
+                            <span class="cat-tag">High Maintenance</span>
+                            <span class="cat-tag">Beautiful</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cat 12: Siamese Mix -->
+                <div class="cat-card" data-category="siamese" data-id="12">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1559235038-1b0faef26f68?w=800&h=600&fit=crop" alt="Siamese Mix" class="cat-image">
+                        <div class="cat-badge">Siamese Mix</div>
+                    </div>
+                    <div class="cat-info">
+                        <h3>Coco</h3>
+                        <p class="cat-breed">Siamese Mix • 3 years old</p>
+                        <div class="cat-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-comments"></i>
+                                <span>Chatty</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-user-friends"></i>
+                                <span>Social</span>
+                            </div>
+                        </div>
+                        <p class="cat-description">Siamese mix with beautiful markings. Loves to chat and follows me everywhere around the house.</p>
+                        <div class="cat-tags">
+                            <span class="cat-tag">Mixed</span>
+                            <span class="cat-tag">Talkative</span>
+                            <span class="cat-tag">Loyal</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="catModal" class="modal">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <div class="modal-content" id="modalContent">
+            <!-- Modal content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Jennifer. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/andy-ng-rfc" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const catCards = document.querySelectorAll('.cat-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+
+                catCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const categories = card.dataset.category.split(' ');
+                        if (categories.includes(filter)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('catModal');
+        const closeModal = document.getElementById('closeModal');
+
+        catCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const img = card.querySelector('.cat-image').src;
+                const title = card.querySelector('h3').textContent;
+                const breed = card.querySelector('.cat-breed').textContent;
+                const traits = card.querySelector('.cat-traits').innerHTML;
+                const description = card.querySelector('.cat-description').textContent;
+                const tags = card.querySelector('.cat-tags').innerHTML;
+
+                document.getElementById('modalContent').innerHTML = `
+                    <img src="${img}" alt="${title}" class="modal-image">
+                    <div class="modal-info">
+                        <h2>${title}</h2>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">${breed}</p>
+                        <div class="cat-traits" style="margin-bottom: 1.5rem;">${traits}</div>
+                        <p style="line-height: 1.8; margin-bottom: 1.5rem;">${description}</p>
+                        <div class="cat-tags">${tags}</div>
+                    </div>
+                `;
+
+                modal.style.display = 'block';
+            });
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Escape key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
