@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="May's Gemstone Collection - Beautiful Crystals and Minerals">
+    <title>May's Gemstone Collection</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gems-hero {
+            min-height: 60vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+        }
+
+        .gems-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .gems-hero p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: white;
+            color: #764ba2;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .gems-section {
+            padding: 80px 20px;
+            background: var(--bg-light);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            border: 2px solid #764ba2;
+            background: white;
+            color: #764ba2;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            border-color: #667eea;
+        }
+
+        .gems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gem-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 3px solid transparent;
+            position: relative;
+        }
+
+        .gem-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            padding: 3px;
+            background: linear-gradient(135deg, transparent, transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .gem-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(118, 75, 162, 0.3);
+        }
+
+        .gem-card:hover::before {
+            opacity: 1;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+        }
+
+        .gem-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .gem-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #764ba2;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .rarity-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #8b7500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .gem-info {
+            padding: 1.5rem;
+        }
+
+        .gem-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gem-origin {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .gem-properties {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .property-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .property-item i {
+            color: #764ba2;
+        }
+
+        .gem-description {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .gem-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .gem-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 5% auto;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            animation: slideInDown 0.4s ease;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .modal-info {
+            padding: 2rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            transform: scale(1.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .gems-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .gems-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-link {
+                top: 70px;
+                left: 10px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                margin: 10% 10px;
+            }
+
+            .modal-image {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">May's Portfolio</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="beanieboos.html" class="nav-link">Beanie Boos</a></li>
+                <li><a href="gemstones.html" class="nav-link">Gemstones</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+
+    <!-- Hero Section -->
+    <section class="gems-hero">
+        <div>
+            <h1><i class="fas fa-gem"></i> May's Gemstone Collection</h1>
+            <p>Explore the beauty and magic of crystals, minerals, and precious stones from around the world</p>
+        </div>
+    </section>
+
+    <!-- Gemstones Collection Section -->
+    <section class="gems-section">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Gemstones</button>
+                <button class="filter-btn" data-filter="precious">Precious</button>
+                <button class="filter-btn" data-filter="crystal">Crystals</button>
+                <button class="filter-btn" data-filter="healing">Healing Stones</button>
+                <button class="filter-btn" data-filter="rare">Rare</button>
+            </div>
+
+            <div class="gems-grid" id="gemsGrid">
+                <!-- Gem 1: Amethyst -->
+                <div class="gem-card" data-category="crystal healing" data-id="1">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1612690769829-b842d0ba8eeb?w=800&h=600&fit=crop" alt="Amethyst" class="gem-image">
+                        <div class="gem-badge">Crystal</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>💜 Amethyst</h3>
+                        <p class="gem-origin">Brazil • Quartz Family</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Purple</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-hammer"></i>
+                                <span>Hardness: 7</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">A stunning purple quartz known for its calming properties and spiritual connection. Perfect for meditation.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Calming</span>
+                            <span class="gem-tag">Spiritual</span>
+                            <span class="gem-tag">Popular</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 2: Rose Quartz -->
+                <div class="gem-card" data-category="crystal healing" data-id="2">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1615909135375-c6b5fb6b6f92?w=800&h=600&fit=crop" alt="Rose Quartz" class="gem-image">
+                        <div class="gem-badge">Crystal</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>💗 Rose Quartz</h3>
+                        <p class="gem-origin">Madagascar • Quartz Family</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Pink</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Love Stone</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">The stone of unconditional love and compassion. Promotes self-love and emotional healing.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Love</span>
+                            <span class="gem-tag">Healing</span>
+                            <span class="gem-tag">Gentle</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 3: Sapphire -->
+                <div class="gem-card" data-category="precious" data-id="3">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800&h=600&fit=crop" alt="Sapphire" class="gem-image">
+                        <div class="gem-badge">Precious</div>
+                        <div class="rarity-badge">⭐ Rare</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>💙 Blue Sapphire</h3>
+                        <p class="gem-origin">Kashmir • Corundum Family</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Deep Blue</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-hammer"></i>
+                                <span>Hardness: 9</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">A precious gemstone symbolizing wisdom and royalty. Second hardest natural gemstone after diamond.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Precious</span>
+                            <span class="gem-tag">Wisdom</span>
+                            <span class="gem-tag">Royalty</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 4: Emerald -->
+                <div class="gem-card" data-category="precious rare" data-id="4">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1583934443355-a0b81b6a54d8?w=800&h=600&fit=crop" alt="Emerald" class="gem-image">
+                        <div class="gem-badge">Precious</div>
+                        <div class="rarity-badge">⭐ Rare</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>💚 Emerald</h3>
+                        <p class="gem-origin">Colombia • Beryl Family</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Green</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-crown"></i>
+                                <span>Luxury</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">The gem of Venus, symbolizing love and rebirth. One of the four precious gemstones with vibrant green color.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Precious</span>
+                            <span class="gem-tag">Rebirth</span>
+                            <span class="gem-tag">Valuable</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 5: Citrine -->
+                <div class="gem-card" data-category="crystal healing" data-id="5">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1615655114726-3a7ff089e3d3?w=800&h=600&fit=crop" alt="Citrine" class="gem-image">
+                        <div class="gem-badge">Crystal</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>🧡 Citrine</h3>
+                        <p class="gem-origin">Brazil • Quartz Family</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Yellow-Orange</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-sun"></i>
+                                <span>Abundance</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">The merchant's stone, bringing prosperity and success. Its sunny color radiates positive energy.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Prosperity</span>
+                            <span class="gem-tag">Joy</span>
+                            <span class="gem-tag">Success</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 6: Lapis Lazuli -->
+                <div class="gem-card" data-category="healing rare" data-id="6">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1604054703168-c39a9f5c0e27?w=800&h=600&fit=crop" alt="Lapis Lazuli" class="gem-image">
+                        <div class="gem-badge">Healing</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>💙 Lapis Lazuli</h3>
+                        <p class="gem-origin">Afghanistan • Ancient Stone</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Deep Blue</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-eye"></i>
+                                <span>Third Eye</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">A celestial stone used by ancient civilizations. Enhances wisdom, truth, and inner vision.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Ancient</span>
+                            <span class="gem-tag">Wisdom</span>
+                            <span class="gem-tag">Truth</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 7: Clear Quartz -->
+                <div class="gem-card" data-category="crystal healing" data-id="7">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1571407970349-bc81e7e96a47?w=800&h=600&fit=crop" alt="Clear Quartz" class="gem-image">
+                        <div class="gem-badge">Crystal</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>🤍 Clear Quartz</h3>
+                        <p class="gem-origin">Arkansas • Master Healer</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Clear</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-bolt"></i>
+                                <span>Amplifier</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">The master healer crystal that amplifies energy and thought. Most versatile healing stone.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Master Healer</span>
+                            <span class="gem-tag">Amplifier</span>
+                            <span class="gem-tag">Clarity</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 8: Ruby -->
+                <div class="gem-card" data-category="precious rare" data-id="8">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&h=600&fit=crop" alt="Ruby" class="gem-image">
+                        <div class="gem-badge">Precious</div>
+                        <div class="rarity-badge">⭐ Rare</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>❤️ Ruby</h3>
+                        <p class="gem-origin">Myanmar • Corundum Family</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Red</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-fire"></i>
+                                <span>Passion</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">The king of gems representing passion and vitality. One of the most valuable colored gemstones.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Precious</span>
+                            <span class="gem-tag">Passion</span>
+                            <span class="gem-tag">Vitality</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 9: Turquoise -->
+                <div class="gem-card" data-category="healing" data-id="9">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=800&h=600&fit=crop" alt="Turquoise" class="gem-image">
+                        <div class="gem-badge">Healing</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>💎 Turquoise</h3>
+                        <p class="gem-origin">Arizona • Sacred Stone</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Blue-Green</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Protection</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">Sacred stone of protection used by ancient cultures. Promotes communication and spiritual grounding.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Protection</span>
+                            <span class="gem-tag">Sacred</span>
+                            <span class="gem-tag">Balance</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 10: Moonstone -->
+                <div class="gem-card" data-category="crystal healing" data-id="10">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1634995796528-0c3f2c6d10c4?w=800&h=600&fit=crop" alt="Moonstone" class="gem-image">
+                        <div class="gem-badge">Crystal</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>🌙 Moonstone</h3>
+                        <p class="gem-origin">India • Feldspar Family</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Pearly White</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-moon"></i>
+                                <span>Intuition</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">A mystical stone with ethereal glow. Enhances intuition and promotes inspiration and new beginnings.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Mystical</span>
+                            <span class="gem-tag">Intuition</span>
+                            <span class="gem-tag">Feminine</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 11: Black Tourmaline -->
+                <div class="gem-card" data-category="healing" data-id="11">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1606315170716-647c0fc1e97d?w=800&h=600&fit=crop" alt="Black Tourmaline" class="gem-image">
+                        <div class="gem-badge">Healing</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>🖤 Black Tourmaline</h3>
+                        <p class="gem-origin">Brazil • Protection Stone</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Black</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Grounding</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">Powerful protection stone that repels negative energy. Essential for grounding and spiritual cleansing.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Protection</span>
+                            <span class="gem-tag">Grounding</span>
+                            <span class="gem-tag">Powerful</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gem 12: Opal -->
+                <div class="gem-card" data-category="precious rare" data-id="12">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1617646856691-532d0df403b7?w=800&h=600&fit=crop" alt="Opal" class="gem-image">
+                        <div class="gem-badge">Precious</div>
+                        <div class="rarity-badge">⭐ Rare</div>
+                    </div>
+                    <div class="gem-info">
+                        <h3>🌈 Fire Opal</h3>
+                        <p class="gem-origin">Australia • Play of Color</p>
+                        <div class="gem-properties">
+                            <div class="property-item">
+                                <i class="fas fa-tint"></i>
+                                <span>Multi-Color</span>
+                            </div>
+                            <div class="property-item">
+                                <i class="fas fa-magic"></i>
+                                <span>Magic</span>
+                            </div>
+                        </div>
+                        <p class="gem-description">A mesmerizing stone displaying rainbow colors. Symbolizes inspiration, imagination, and creativity.</p>
+                        <div class="gem-tags">
+                            <span class="gem-tag">Rare</span>
+                            <span class="gem-tag">Creative</span>
+                            <span class="gem-tag">Mystical</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="gemModal" class="modal">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <div class="modal-content" id="modalContent">
+            <!-- Modal content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 May. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/andy-ng-rfc" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const gemCards = document.querySelectorAll('.gem-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+
+                gemCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const categories = card.dataset.category.split(' ');
+                        if (categories.includes(filter)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('gemModal');
+        const closeModal = document.getElementById('closeModal');
+
+        gemCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const img = card.querySelector('.gem-image').src;
+                const title = card.querySelector('h3').textContent;
+                const origin = card.querySelector('.gem-origin').textContent;
+                const properties = card.querySelector('.gem-properties').innerHTML;
+                const description = card.querySelector('.gem-description').textContent;
+                const tags = card.querySelector('.gem-tags').innerHTML;
+
+                document.getElementById('modalContent').innerHTML = `
+                    <img src="${img}" alt="${title}" class="modal-image">
+                    <div class="modal-info">
+                        <h2>${title}</h2>
+                        <p style="color: var(--text-light); margin-bottom: 1rem; font-style: italic;">${origin}</p>
+                        <div class="gem-properties" style="margin-bottom: 1.5rem;">${properties}</div>
+                        <p style="line-height: 1.8; margin-bottom: 1.5rem;">${description}</p>
+                        <div class="gem-tags">${tags}</div>
+                    </div>
+                `;
+
+                modal.style.display = 'block';
+            });
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Escape key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
