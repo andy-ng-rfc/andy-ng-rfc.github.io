@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="May's Beanie Boo Collection - Adorable Plush Friends">
+    <title>May's Beanie Boo Collection</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .beanies-hero {
+            min-height: 60vh;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #ffecd2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+        }
+
+        .beanies-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .beanies-hero p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            background: white;
+            color: #ff6b9d;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .beanies-section {
+            padding: 80px 20px;
+            background: var(--bg-light);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            border: 2px solid #ff6b9d;
+            background: white;
+            color: #ff6b9d;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #ff6b9d;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .beanies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .beanie-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+
+        .beanie-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: #ff6b9d;
+        }
+
+        .beanie-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            position: relative;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .beanie-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #ff6b9d;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .beanie-info {
+            padding: 1.5rem;
+        }
+
+        .beanie-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .beanie-type {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .beanie-traits {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .trait-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .trait-item i {
+            color: #ff6b9d;
+        }
+
+        .beanie-description {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .beanie-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .beanie-tag {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: relative;
+            margin: 5% auto;
+            max-width: 1000px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            animation: slideInDown 0.4s ease;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .modal-info {
+            padding: 2rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 2001;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            transform: scale(1.2);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .beanies-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .beanies-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-link {
+                top: 70px;
+                left: 10px;
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+
+            .modal-content {
+                margin: 10% 10px;
+            }
+
+            .modal-image {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">May's Portfolio</a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="beanieboos.html" class="nav-link">Beanie Boos</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+
+    <!-- Hero Section -->
+    <section class="beanies-hero">
+        <div>
+            <h1><i class="fas fa-heart"></i> May's Beanie Boo Collection</h1>
+            <p>Discover my colorful world of adorable Beanie Boo friends - soft, sparkly, and full of personality!</p>
+        </div>
+    </section>
+
+    <!-- Beanie Boos Collection Section -->
+    <section class="beanies-section">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">All Beanies</button>
+                <button class="filter-btn" data-filter="unicorn">Unicorns</button>
+                <button class="filter-btn" data-filter="cat">Cats</button>
+                <button class="filter-btn" data-filter="dog">Dogs</button>
+                <button class="filter-btn" data-filter="other">Other Animals</button>
+            </div>
+
+            <div class="beanies-grid" id="beaniesGrid">
+                <!-- Beanie 1: Unicorn -->
+                <div class="beanie-card" data-category="unicorn" data-id="1">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop" alt="Unicorn Plush" class="beanie-image">
+                        <div class="beanie-badge">Unicorn</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>✨ Fantasia</h3>
+                        <p class="beanie-type">Rainbow Unicorn</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-star"></i>
+                                <span>Sparkly Horn</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-rainbow"></i>
+                                <span>Rainbow Mane</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">A magical unicorn with glittery hooves and a rainbow-colored mane. Her big sparkly eyes will capture your heart!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Medium</span>
+                            <span class="beanie-tag">Glitter Eyes</span>
+                            <span class="beanie-tag">Limited Edition</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 2: Pink Cat -->
+                <div class="beanie-card" data-category="cat" data-id="2">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=800&h=600&fit=crop" alt="Pink Cat Plush" class="beanie-image">
+                        <div class="beanie-badge">Cat</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>💗 Cupcake</h3>
+                        <p class="beanie-type">Pink Tabby Cat</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Super Soft</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-smile"></i>
+                                <span>Sweet Face</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">An adorable pink kitty with the softest fur and the biggest glitter eyes. Perfect cuddle buddy!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Small</span>
+                            <span class="beanie-tag">Birthday: July 12</span>
+                            <span class="beanie-tag">Popular</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 3: Purple Unicorn -->
+                <div class="beanie-card" data-category="unicorn" data-id="3">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1587402092301-725e37c70fd8?w=800&h=600&fit=crop" alt="Purple Unicorn" class="beanie-image">
+                        <div class="beanie-badge">Unicorn</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>💜 Twilight</h3>
+                        <p class="beanie-type">Purple Starlight Unicorn</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-moon"></i>
+                                <span>Night Sky</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-sparkles"></i>
+                                <span>Glitter</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">A mystical purple unicorn with a starry pattern and iridescent horn. She loves moonlit adventures!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Large</span>
+                            <span class="beanie-tag">Exclusive</span>
+                            <span class="beanie-tag">Rare</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 4: Dog -->
+                <div class="beanie-card" data-category="dog" data-id="4">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=800&h=600&fit=crop" alt="Puppy Plush" class="beanie-image">
+                        <div class="beanie-badge">Dog</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>🐶 Buddy</h3>
+                        <p class="beanie-type">Golden Retriever Pup</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-bone"></i>
+                                <span>Playful</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-paw"></i>
+                                <span>Loyal</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">A happy golden puppy with floppy ears and a wagging tail. Always ready for playtime and cuddles!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Medium</span>
+                            <span class="beanie-tag">Huggable</span>
+                            <span class="beanie-tag">Classic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 5: Owl -->
+                <div class="beanie-card" data-category="other" data-id="5">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1616012689827-35e579eef9a4?w=800&h=600&fit=crop" alt="Owl Plush" class="beanie-image">
+                        <div class="beanie-badge">Owl</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>🦉 Wisdom</h3>
+                        <p class="beanie-type">Wise Owl</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-book"></i>
+                                <span>Smart</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-moon"></i>
+                                <span>Night Owl</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">A colorful owl with oversized glittery eyes and soft feathered wings. The wisest friend in the collection!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Small</span>
+                            <span class="beanie-tag">Colorful</span>
+                            <span class="beanie-tag">Unique</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 6: Penguin -->
+                <div class="beanie-card" data-category="other" data-id="6">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1551728996-28f9b0ac1a9c?w=800&h=600&fit=crop" alt="Penguin Plush" class="beanie-image">
+                        <div class="beanie-badge">Penguin</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>🐧 Waddles</h3>
+                        <p class="beanie-type">Arctic Penguin</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-snowflake"></i>
+                                <span>Cool</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-swimmer"></i>
+                                <span>Swimmer</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">An adorable penguin with a tuxedo pattern and orange feet. Loves ice skating and fish!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Medium</span>
+                            <span class="beanie-tag">Winter Edition</span>
+                            <span class="beanie-tag">Cute</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 7: Rainbow Cat -->
+                <div class="beanie-card" data-category="cat" data-id="7">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=800&h=600&fit=crop" alt="Rainbow Cat" class="beanie-image">
+                        <div class="beanie-badge">Cat</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>🌈 Prism</h3>
+                        <p class="beanie-type">Rainbow Tie-Dye Cat</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-palette"></i>
+                                <span>Colorful</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-star"></i>
+                                <span>Special</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">A spectacular rainbow-colored kitty with tie-dye fur patterns. One of the most unique in the collection!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Small</span>
+                            <span class="beanie-tag">Limited</span>
+                            <span class="beanie-tag">Collector's Item</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 8: Husky -->
+                <div class="beanie-card" data-category="dog" data-id="8">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1568572933382-74d440642117?w=800&h=600&fit=crop" alt="Husky Plush" class="beanie-image">
+                        <div class="beanie-badge">Dog</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>❄️ Frost</h3>
+                        <p class="beanie-type">Siberian Husky</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-mountain"></i>
+                                <span>Adventurous</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-ice-cream"></i>
+                                <span>Cool</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">A fluffy husky with striking blue glitter eyes and soft grey and white fur. Loves snow days!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Large</span>
+                            <span class="beanie-tag">Blue Eyes</span>
+                            <span class="beanie-tag">Fluffy</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 9: Bunny -->
+                <div class="beanie-card" data-category="other" data-id="9">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=800&h=600&fit=crop" alt="Bunny Plush" class="beanie-image">
+                        <div class="beanie-badge">Bunny</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>🐰 Cotton</h3>
+                        <p class="beanie-type">Fluffy Easter Bunny</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-carrot"></i>
+                                <span>Loves Carrots</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-cloud"></i>
+                                <span>Super Soft</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">The softest white bunny with long floppy ears and a cottontail. Perfect for Easter or any day!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Medium</span>
+                            <span class="beanie-tag">Easter Special</span>
+                            <span class="beanie-tag">Adorable</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 10: Dragon -->
+                <div class="beanie-card" data-category="other" data-id="10">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?w=800&h=600&fit=crop" alt="Dragon Plush" class="beanie-image">
+                        <div class="beanie-badge">Dragon</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>🐉 Ember</h3>
+                        <p class="beanie-type">Fire Dragon</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-fire"></i>
+                                <span>Brave</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-dragon"></i>
+                                <span>Mythical</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">A fierce yet friendly dragon with sparkly wings and a glittery tail. Protector of the collection!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Large</span>
+                            <span class="beanie-tag">Fantasy</span>
+                            <span class="beanie-tag">Rare</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 11: Siamese Cat -->
+                <div class="beanie-card" data-category="cat" data-id="11">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=600&fit=crop" alt="Siamese Cat" class="beanie-image">
+                        <div class="beanie-badge">Cat</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>🌟 Starlight</h3>
+                        <p class="beanie-type">Siamese Kitten</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-gem"></i>
+                                <span>Precious</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-crown"></i>
+                                <span>Elegant</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">An elegant Siamese cat with cream and brown coloring and stunning blue glitter eyes. Simply purr-fect!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Small</span>
+                            <span class="beanie-tag">Elegant</span>
+                            <span class="beanie-tag">Classic</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Beanie 12: Corgi -->
+                <div class="beanie-card" data-category="dog" data-id="12">
+                    <div style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1597633425046-08f5110420b5?w=800&h=600&fit=crop" alt="Corgi Plush" class="beanie-image">
+                        <div class="beanie-badge">Dog</div>
+                    </div>
+                    <div class="beanie-info">
+                        <h3>👑 Royal</h3>
+                        <p class="beanie-type">Welsh Corgi</p>
+                        <div class="beanie-traits">
+                            <div class="trait-item">
+                                <i class="fas fa-smile-beam"></i>
+                                <span>Happy</span>
+                            </div>
+                            <div class="trait-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Loyal</span>
+                            </div>
+                        </div>
+                        <p class="beanie-description">An adorable corgi with short legs, big ears, and a cheerful smile. The queen's favorite breed!</p>
+                        <div class="beanie-tags">
+                            <span class="beanie-tag">Medium</span>
+                            <span class="beanie-tag">Popular</span>
+                            <span class="beanie-tag">Trendy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="beanieModal" class="modal">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <div class="modal-content" id="modalContent">
+            <!-- Modal content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 May. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="https://github.com/andy-ng-rfc" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Filter functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const beanieCards = document.querySelectorAll('.beanie-card');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.dataset.filter;
+
+                beanieCards.forEach(card => {
+                    if (filter === 'all') {
+                        card.style.display = 'block';
+                    } else {
+                        const categories = card.dataset.category.split(' ');
+                        if (categories.includes(filter)) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('beanieModal');
+        const closeModal = document.getElementById('closeModal');
+
+        beanieCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const img = card.querySelector('.beanie-image').src;
+                const title = card.querySelector('h3').textContent;
+                const type = card.querySelector('.beanie-type').textContent;
+                const traits = card.querySelector('.beanie-traits').innerHTML;
+                const description = card.querySelector('.beanie-description').textContent;
+                const tags = card.querySelector('.beanie-tags').innerHTML;
+
+                document.getElementById('modalContent').innerHTML = `
+                    <img src="${img}" alt="${title}" class="modal-image">
+                    <div class="modal-info">
+                        <h2>${title}</h2>
+                        <p style="color: var(--text-light); margin-bottom: 1rem; font-style: italic;">${type}</p>
+                        <div class="beanie-traits" style="margin-bottom: 1.5rem;">${traits}</div>
+                        <p style="line-height: 1.8; margin-bottom: 1.5rem;">${description}</p>
+                        <div class="beanie-tags">${tags}</div>
+                    </div>
+                `;
+
+                modal.style.display = 'block';
+            });
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Escape key to close modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
